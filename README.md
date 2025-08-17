@@ -254,3 +254,33 @@ A: `/var/log/squid/access.log` and `/var/log/squid/cache.log`.
 ---
 
 Happy proxying! If you want this README embedded into your existing project folder, tell me your path and I’ll place it there for you.
+
+
+
+
+#Updated squid.conf (without invalid directives): (optional)
+http_port 3128
+cache_dir ufs /var/spool/squid 100 16 256
+access_log /var/log/squid/access.log squid
+cache_log /var/log/squid/cache.log
+cache_mem 64 MB
+dns_nameservers 8.8.8.8 8.8.4.4
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+auth_param basic realm Proxy Authentication
+auth_param basic children 5
+auth_param basic credentialsttl 2 hours
+acl authenticated proxy_auth REQUIRED
+http_access allow authenticated
+acl localnet src 127.0.0.1/32
+http_access allow localnet
+request_timeout 30 seconds
+connect_timeout 15 seconds
+maximum_object_size_in_memory 8 KB
+maximum_object_size 4 MB
+cache_swap_low 90
+cache_swap_high 95
+refresh_pattern ^ftp: 1440 20% 10080
+refresh_pattern ^gopher: 1440 0% 1440
+refresh_pattern . 0 20% 4320
+http_access deny all
+
